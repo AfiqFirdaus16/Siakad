@@ -135,11 +135,11 @@
                                 Upload File CSV
                             </label>
 
-                            <input type="file" name="file" accept=".csv" class="form-control">
+                            <input type="file" name="file" accept=".csv" class="form-control" required>
 
                         </div>
 
-                        <button class="btn btn-success">
+                        <button type="submit" class="btn btn-success">
                             Import CSV
                         </button>
 

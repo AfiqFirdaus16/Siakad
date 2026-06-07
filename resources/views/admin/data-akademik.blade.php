@@ -14,14 +14,26 @@
                 </div>
 
                 <div class="col-md-6">
+                    <form action="/data-akademik" method="GET">
 
-                    <form method="GET">
+                        <div class="input-group">
 
-                        <input type="text" name="nisn" class="form-control" placeholder="Cari berdasarkan NISN..."
-                            value="{{ request('nisn') }}">
+                            <input type="text" name="search" class="form-control"
+                                placeholder="Cari berdasarkan NISN atau Nama Siswa..." value="{{ request('search') }}">
+
+                            <button type="submit" class="btn btn-primary">
+                                Cari
+                            </button>
+
+                            @if (request('search'))
+                                <a href="/data-akademik" class="btn btn-danger">
+                                    Reset
+                                </a>
+                            @endif
+
+                        </div>
 
                     </form>
-
                 </div>
 
             </div>

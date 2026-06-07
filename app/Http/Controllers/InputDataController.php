@@ -8,46 +8,46 @@ use Illuminate\Support\Facades\DB;
 
 class InputDataController extends Controller
 {
-    // Fungsi untuk membuat NISN acak (karena user_id sudah Auto Increment)
+    // Fungsi untuk membuat NISN acak 8 digit otomatis
     private function generateNisn()
     {
         do {
             $nisn = str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
-        } while (Student::where('NISN', $nisn)->exists()); // Huruf besar sesuai database
+        } while (Student::where('NISN', $nisn)->exists()); // Pastikan tidak ada yang kembar
 
         return $nisn;
     }
 
+    // ==========================================
+    // 1. FITUR INPUT MANUAL
+    // ==========================================
     public function store(Request $request)
     {
-        // 1. Validasi input dari form
         $request->validate([
-            'name' => 'required',
-            'exam_score' => 'required|numeric',
-            'attendance' => 'required|numeric',
-            'previous_scores' => 'required|numeric',
-            'hours_studied' => 'required|numeric',
-            'tutoring_sessions' => 'required|numeric',
-            'physical_activity' => 'required|numeric',
-            'sleep_hours' => 'required|numeric',
+            'name'                => 'required',
+            'exam_score'          => 'required|numeric',
+            'attendance'          => 'required|numeric',
+            'previous_scores'     => 'required|numeric',
+            'hours_studied'       => 'required|numeric',
+            'tutoring_sessions'   => 'required|numeric',
+            'physical_activity'   => 'required|numeric',
+            'sleep_hours'         => 'required|numeric',
             'access_to_resources' => 'required'
         ]);
 
         try {
-            // 2. Simpan langsung ke satu tabel 'students'
+            // Perhatikan: user_id tidak kita tulis di sini karena Database otomatis membuatkannya.
             $student = Student::create([
-                // user_id tidak perlu ditulis karena otomatis terisi oleh database
-                'NISN' => $this->generateNisn(),
-                'name' => $request->name,
+                'NISN'                => $this->generateNisn(), // Generate otomatis
+                'name'                => $request->name,
 
-                // Pemetaan ke kolom database yang hurufnya besar/kecil
-                'Exam_Score' => $request->exam_score,
-                'Attendance' => $request->attendance,
-                'Previous_Scores' => $request->previous_scores,
-                'Hours_Studied' => $request->hours_studied,
-                'Tutoring_Sessions' => $request->tutoring_sessions,
-                'Physical_Activity' => $request->physical_activity,
-                'Sleep_Hours' => $request->sleep_hours,
+                'Exam_Score'          => $request->exam_score,
+                'Attendance'          => $request->attendance,
+                'Previous_Scores'     => $request->previous_scores,
+                'Hours_Studied'       => $request->hours_studied,
+                'Tutoring_Sessions'   => $request->tutoring_sessions,
+                'Physical_Activity'   => $request->physical_activity,
+                'Sleep_Hours'         => $request->sleep_hours,
                 'Access_to_Resources' => $request->access_to_resources,
             ]);
 
@@ -57,11 +57,19 @@ class InputDataController extends Controller
         }
     }
 
-    // Fitur Import CSV yang sudah diaktifkan
+    // ==========================================
+    // 2. FITUR IMPORT CSV
+    // ==========================================
     public function import(Request $request)
     {
+        // 1. MODIFIKASI VALIDASI: Melonggarkan ukuran hingga 10MB (10240 KB)
+        // dan menambahkan pesan error berbahasa Indonesia agar mudah dipahami.
         $request->validate([
-            'file' => 'required|mimes:csv,txt|max:2048',
+            'file' => 'required|file|max:10240',
+        ], [
+            'file.required' => 'Anda belum memilih file CSV untuk diunggah.',
+            'file.file'     => 'Format yang Anda unggah tidak valid.',
+            'file.max'      => 'Ukuran file terlalu besar! Maksimal 10MB.'
         ]);
 
         try {
@@ -73,62 +81,63 @@ class InputDataController extends Controller
             $berhasil = 0;
 
             DB::beginTransaction();
-            while (($row = fgetcsv($fileData)) !== false) {
-                // Asumsi urutan kolom CSV dari downloadTemplate()
-                Student::create([
-                    'NISN' => $this->generateNisn(),
-                    'name' => $row[0],
-                    'Exam_Score' => $row[1],
-                    'Attendance' => $row[2],
-                    'Previous_Scores' => $row[3],
-                    'Hours_Studied' => $row[4],
-                    'Tutoring_Sessions' => $row[5],
-                    'Physical_Activity' => $row[6],
-                    'Sleep_Hours' => $row[7],
-                    'Access_to_Resources' => $row[8],
-                ]);
-                $berhasil++;
+            while (($row = fgetcsv($fileData, 1000, ",")) !== false) {
+
+                // Pastikan baris tidak kosong
+                if (isset($row[0])) {
+                    Student::create([
+                        // user_id -> Otomatis dibuatkan oleh database
+
+                        // NISN -> Kita generate otomatis (mengabaikan NISN bawaan CSV)
+                        'NISN'                => $this->generateNisn(),
+
+                        // Name -> Kosongkan karena di CSV asli Anda tidak ada kolom nama siswa
+                        'name'                => null,
+
+                        // Membaca urutan index array berdasarkan kolom CSV ASLI Anda
+                        'Exam_Score'          => $row[1] ?? 0,
+                        'Attendance'          => $row[2] ?? 0,
+                        'Hours_Studied'       => $row[3] ?? 0,
+                        'Previous_Scores'     => $row[4] ?? 0,
+                        'Tutoring_Sessions'   => $row[5] ?? 0,
+                        'Physical_Activity'   => $row[6] ?? 0,
+                        'Sleep_Hours'         => $row[7] ?? 0,
+                        'Access_to_Resources' => $row[8] ?? 'Medium',
+                    ]);
+                    $berhasil++;
+                }
             }
             DB::commit();
             fclose($fileData);
 
-            return redirect()->back()->with('success', $berhasil . ' data siswa berhasil diimpor dari CSV!');
+            return redirect()->back()->with('success', $berhasil . ' data siswa berhasil diimpor otomatis dari CSV!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Gagal import CSV. Pastikan format sesuai template. Error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal import CSV. Error: ' . $e->getMessage());
         }
     }
 
+    // ==========================================
+    // 3. DOWNLOAD TEMPLATE
+    // ==========================================
     public function downloadTemplate()
     {
         $filename = 'template_siswa.csv';
 
         $callback = function () {
             $file = fopen('php://output', 'w');
-            // Header CSV disesuaikan
-            fputcsv($file, [
-                'name',
-                'exam_score',
-                'attendance',
-                'previous_scores',
-                'hours_studied',
-                'tutoring_sessions',
-                'physical_activity',
-                'sleep_hours',
-                'access_to_resources'
-            ]);
 
-            // Contoh data agar user tidak bingung
+            // Header CSV disesuaikan dengan urutan kolom Import CSV di atas
             fputcsv($file, [
-                'Budi Santoso',
-                '85',
-                '90',
-                '80',
-                '15',
-                '2',
-                '3',
-                '7',
-                'High'
+                'NISN',
+                'Exam_Score',
+                'Attendance',
+                'Hours_Studied',
+                'Previous_Scores',
+                'Tutoring_Sessions',
+                'Physical_Activity',
+                'Sleep_Hours',
+                'Access_to_Resources'
             ]);
             fclose($file);
         };
