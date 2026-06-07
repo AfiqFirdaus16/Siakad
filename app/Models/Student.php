@@ -10,6 +10,6 @@ class Student extends Model
     protected $primaryKey = 'user_id';
 
     protected $guarded = [];
-    protected $table = 'Students';
+    protected $table = 'students';
     public $timestamps = false;
 }
