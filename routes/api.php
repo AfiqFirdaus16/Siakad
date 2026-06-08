@@ -1,8 +1,26 @@
-<?php
+<?php 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User; // Sesuaikan dengan model user SIAKAD
 
-use App\Http\Controllers\Api\SbpIntegrationController;
+Route::post('/verify-login', function (Request $request) {
+    // SIAKAD mengecek email dan password yang dikirim EduTrace
+    $credentials = $request->only('email', 'password');
 
-// URL nantinya akan menjadi: http://127.0.0.1:8000/api/v1/siswa/{nisn}
-Route::prefix('v1')->group(function () {
-    Route::get('/siswa/{nisn}', [SbpIntegrationController::class, 'getStudentData']);
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
+        $student = $user->student; // Mengambil relasi data siswa di SIAKAD
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'nama' => $student ? $student->name : $user->name,
+                'email' => $user->email,
+                // Anda bisa menambahkan data akademik lainnya di sini nanti
+            ]
+        ]);
+    }
+
+    return response()->json(['status' => 'error', 'message' => 'Invalid credentials'], 401);
 });
