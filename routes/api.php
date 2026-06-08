@@ -2,33 +2,27 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Hash;
 use App\Models\Student;
 
 Route::post('/verify-nisn', function (Request $request) {
-    // 1. Cari siswa berdasarkan NISN (beserta relasi user-nya)
-    $student = Student::with('user')->where('NISN', $request->nisn)->first();
+    // 1. Cari siswa murni dari tabel students saja (tidak perlu bawa-bawa tabel user)
+    $student = Student::where('NISN', $request->nisn)->first();
 
-    if ($student && $student->user) {
+    // 2. Cek apakah NISN terdaftar di tabel students, 
+    // DAN password yang diketik di form login EduTrace sama dengan NISN-nya
+    if ($student && $request->password === $student->NISN) {
 
-        // 2. LOGIKA PINTAR: Cek apakah password yang diketik adalah NISN (Default)
-        // ATAU password asli yang ada di tabel users SIAKAD
-        $isPasswordNisn = ($request->password === $student->NISN);
-        $isPasswordAsli = Hash::check($request->password, $student->user->password);
-
-        if ($isPasswordNisn || $isPasswordAsli) {
-
-            // 3. Jika salah satu cocok, kembalikan data ke EduTrace
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'nisn' => $student->NISN,
-                    'name' => $student->name,
-                    'email' => $student->user->email,
-                ]
-            ]);
-        }
+        // 3. Jika cocok, kembalikan data dasarnya saja ke EduTrace (tanpa email)
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'nisn' => $student->NISN,
+                'name' => $student->name,
+                // Tambahkan data akademik lain di sini jika dibutuhkan nanti
+            ]
+        ]);
     }
 
-    return response()->json(['status' => 'error', 'message' => 'NISN atau Password salah'], 401);
+    // Jika NISN tidak ada atau password tidak sama dengan NISN
+    return response()->json(['status' => 'error', 'message' => 'NISN tidak terdaftar atau Password salah'], 401);
 });
