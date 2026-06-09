@@ -54,11 +54,6 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label>Exam Score</label>
-                                <input type="number" name="exam_score" class="form-control">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
                                 <label>Attendance</label>
                                 <input type="number" name="attendance" class="form-control">
                             </div>
@@ -79,8 +74,8 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label>Physical Activity</label>
-                                <input type="number" name="physical_activity" class="form-control">
+                                <label>Motivation Level</label>
+                                <input type="number" name="motivation_level" class="form-control">
                             </div>
 
                             <div class="col-md-6 mb-3">

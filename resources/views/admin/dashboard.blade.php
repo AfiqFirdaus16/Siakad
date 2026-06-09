@@ -65,17 +65,6 @@
     <script>
         const labels = ['0-20', '21-40', '41-60', '61-80', '81-100'];
 
-        new Chart(document.getElementById('examChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Exam Score',
-                    data: @json($examDistribution)
-                }]
-            }
-        });
-
         new Chart(document.getElementById('attendanceChart'), {
             type: 'bar',
             data: {

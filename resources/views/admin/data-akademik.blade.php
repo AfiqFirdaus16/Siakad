@@ -54,15 +54,14 @@
                             <th>NISN</th>
                             <th>Nama</th>
 
-                            <th>Exam Score</th>
                             <th>Attendance</th>
-                            <th>Previous Score</th>
-
-                            <th>Hours Studied</th>
-                            <th>Tutoring</th>
-                            <th>Physical Activity</th>
                             <th>Sleep Hours</th>
+                            <th>Hours Studied</th>
                             <th>Access Resource</th>
+                            <th>Motivation Level</th>
+                            <th>Tutoring Sessions</th>
+                            <th>Previous Score</th>
+                            <th>Kesulitan Belajar</th>
 
                         </tr>
 
@@ -77,15 +76,14 @@
                                 <td>{{ $row->NISN }}</td>
 
                                 <td>{{ $row->name ?? '-' }}</td>
-
-                                <td>{{ $row->Exam_Score ?? '-' }}</td>
                                 <td>{{ $row->Attendance ?? '-' }}</td>
                                 <td>{{ $row->Previous_Scores ?? '-' }}</td>
                                 <td>{{ $row->Hours_Studied ?? '-' }}</td>
                                 <td>{{ $row->Tutoring_Sessions ?? '-' }}</td>
-                                <td>{{ $row->Physical_Activity ?? '-' }}</td>
                                 <td>{{ $row->Sleep_Hours ?? '-' }}</td>
                                 <td>{{ $row->Access_to_Resources ?? '-' }}</td>
+                                <td>{{ $row->Motivation_Level ?? '-' }}</td>
+                                <td>{{ $row->Kesulitan_Belajar ?? '-' }}</td>
                             </tr>
 
                         @empty
