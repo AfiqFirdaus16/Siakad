@@ -10,7 +10,7 @@
                 </div>
                 <div class="card-body">
                     <div style="height:300px;">
-                        <canvas id="examChart"></canvas>
+                        <canvas id="scoreChart"></canvas>
                     </div>
                 </div>
             </div>
