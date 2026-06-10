@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Student;
+use App\Http\Controllers\Api\SbpIntegrationController;
 
 // ================================================================
 // RUTE 1: UNTUK KEBUTUHAN LOGIN EDUTRACE (POST)
@@ -47,3 +48,11 @@ Route::get('/cek-siswa/{nisn}', function ($nisn) {
         'pesan' => 'NISN tersebut TIDAK ADA di database SIAKAD Railway'
     ]);
 });
+
+// ================================================================
+// RUTE 3: UNTUK KEBUTUHAN INTEGRASI WEB SBP
+// ================================================================
+Route::get('/student/{nisn}', [
+    SbpIntegrationController::class,
+    'getStudentData'
+]);

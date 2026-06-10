@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class InputDataController extends Controller
 {
-    // Fungsi untuk membuat NISN acak 8 digit otomatis
+    // Fungsi untuk membuat NISN acak 10 digit otomatis
     private function generateNisn()
     {
         do {
-            $nisn = str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
+            $nisn = '0' . str_pad((string) random_int (0, 99999999), 9, '0', STR_PAD_LEFT);
         } while (Student::where('NISN', $nisn)->exists()); // Pastikan tidak ada yang kembar
 
         return $nisn;
@@ -23,33 +23,23 @@ class InputDataController extends Controller
     // ==========================================
     public function store(Request $request)
     {
-        $request->validate([
-            'name'                => 'required',
-            'exam_score'          => 'required|numeric',
-            'attendance'          => 'required|numeric',
-            'previous_scores'     => 'required|numeric',
-            'hours_studied'       => 'required|numeric',
-            'tutoring_sessions'   => 'required|numeric',
-            'physical_activity'   => 'required|numeric',
-            'sleep_hours'         => 'required|numeric',
-            'access_to_resources' => 'required'
+            $request->validate([
+            'name'            => 'required',
+            'attendance'      => 'required|numeric',
+            'previous_scores' => 'required|numeric',
+            'hours_studied'   => 'required|numeric',
         ]);
 
         try {
             // Perhatikan: user_id tidak kita tulis di sini karena Database otomatis membuatkannya.
             $student = Student::create([
-                'NISN'                => $this->generateNisn(), // Generate otomatis
-                'name'                => $request->name,
+            'NISN'            => $this->generateNisn(),
+            'name'            => $request->name,
 
-                'Exam_Score'          => $request->exam_score,
-                'Attendance'          => $request->attendance,
-                'Previous_Scores'     => $request->previous_scores,
-                'Hours_Studied'       => $request->hours_studied,
-                'Tutoring_Sessions'   => $request->tutoring_sessions,
-                'Physical_Activity'   => $request->physical_activity,
-                'Sleep_Hours'         => $request->sleep_hours,
-                'Access_to_Resources' => $request->access_to_resources,
-            ]);
+            'Attendance'      => $request->attendance,
+            'Previous_Scores' => $request->previous_scores,
+            'Hours_Studied'   => $request->hours_studied,
+        ]);
 
             return redirect()->back()->with('success', 'Data siswa berhasil ditambahkan secara manual! NISN: ' . $student->NISN);
         } catch (\Exception $e) {
@@ -95,14 +85,9 @@ class InputDataController extends Controller
                         'name'                => null,
 
                         // Membaca urutan index array berdasarkan kolom CSV ASLI Anda
-                        'Exam_Score'          => $row[1] ?? 0,
-                        'Attendance'          => $row[2] ?? 0,
-                        'Hours_Studied'       => $row[3] ?? 0,
-                        'Previous_Scores'     => $row[4] ?? 0,
-                        'Tutoring_Sessions'   => $row[5] ?? 0,
-                        'Physical_Activity'   => $row[6] ?? 0,
-                        'Sleep_Hours'         => $row[7] ?? 0,
-                        'Access_to_Resources' => $row[8] ?? 'Medium',
+                        'Attendance'          => $row[0] ?? 0,
+                        'Hours_Studied'       => $row[1] ?? 0,
+                        'Previous_Scores'     => $row[2] ?? 0,
                     ]);
                     $berhasil++;
                 }
@@ -130,14 +115,10 @@ class InputDataController extends Controller
             // Header CSV disesuaikan dengan urutan kolom Import CSV di atas
             fputcsv($file, [
                 'NISN',
-                'Exam_Score',
+                'Nama',
                 'Attendance',
                 'Hours_Studied',
                 'Previous_Scores',
-                'Tutoring_Sessions',
-                'Physical_Activity',
-                'Sleep_Hours',
-                'Access_to_Resources'
             ]);
             fclose($file);
         };

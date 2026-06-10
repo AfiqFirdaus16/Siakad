@@ -13,56 +13,48 @@ class DashboardController extends Controller
     {
         $totalSiswa = Student::count();
 
-        $avgExam = Student::avg('exam_score');
+        // Rata-rata numerik
+        $avgAttendance = Student::avg('Attendance');
+        $avgStudy = Student::avg('Hours_Studied');
+        $avgPreviousScore = Student::avg('Previous_Scores');
 
-        $avgAttendance = Student::avg('attendance');
-
-        $avgStudy = Student::avg('hours_studied');
-
-        $avgSleep = Student::avg('sleep_hours');
-
-        $examDistribution = [
-            Student::whereBetween('exam_score', [0, 20])->count(),
-            Student::whereBetween('exam_score', [21, 40])->count(),
-            Student::whereBetween('exam_score', [41, 60])->count(),
-            Student::whereBetween('exam_score', [61, 80])->count(),
-            Student::whereBetween('exam_score', [81, 100])->count(),
-        ];
-
+        // Distribusi Attendance
         $attendanceDistribution = [
-            Student::whereBetween('attendance', [0, 20])->count(),
-            Student::whereBetween('attendance', [21, 40])->count(),
-            Student::whereBetween('attendance', [41, 60])->count(),
-            Student::whereBetween('attendance', [61, 80])->count(),
-            Student::whereBetween('attendance', [81, 100])->count(),
+            Student::whereBetween('Attendance', [0, 20])->count(),
+            Student::whereBetween('Attendance', [21, 40])->count(),
+            Student::whereBetween('Attendance', [41, 60])->count(),
+            Student::whereBetween('Attendance', [61, 80])->count(),
+            Student::whereBetween('Attendance', [81, 100])->count(),
         ];
 
+        // Distribusi Previous Score
+        $scoreDistribution = [
+            Student::whereBetween('Previous_Scores', [0, 20])->count(),
+            Student::whereBetween('Previous_Scores', [21, 40])->count(),
+            Student::whereBetween('Previous_Scores', [41, 60])->count(),
+            Student::whereBetween('Previous_Scores', [61, 80])->count(),
+            Student::whereBetween('Previous_Scores', [81, 100])->count(),
+        ];
+
+        // Distribusi Hours Studied
         $studyDistribution = [
-            Student::whereBetween('hours_studied', [0, 5])->count(),
-            Student::whereBetween('hours_studied', [6, 10])->count(),
-            Student::whereBetween('hours_studied', [11, 15])->count(),
-            Student::whereBetween('hours_studied', [16, 20])->count(),
-            Student::where('hours_studied', '>', 20)->count(),
-        ];
-
-        $sleepDistribution = [
-            Student::whereBetween('sleep_hours', [0, 2])->count(),
-            Student::whereBetween('sleep_hours', [3, 4])->count(),
-            Student::whereBetween('sleep_hours', [5, 6])->count(),
-            Student::whereBetween('sleep_hours', [7, 8])->count(),
-            Student::where('sleep_hours', '>', 8)->count(),
+            Student::whereBetween('Hours_Studied', [0, 5])->count(),
+            Student::whereBetween('Hours_Studied', [6, 10])->count(),
+            Student::whereBetween('Hours_Studied', [11, 15])->count(),
+            Student::whereBetween('Hours_Studied', [16, 20])->count(),
+            Student::where('Hours_Studied', '>', 20)->count(),
         ];
 
         return view('admin.dashboard', compact(
             'totalSiswa',
-            'avgExam',
+
             'avgAttendance',
             'avgStudy',
-            'avgSleep',
-            'examDistribution',
+            'avgPreviousScore',
+
             'attendanceDistribution',
+            'scoreDistribution',
             'studyDistribution',
-            'sleepDistribution'
         ));
     }
 }

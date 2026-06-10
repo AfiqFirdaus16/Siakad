@@ -54,18 +54,8 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label>Exam Score</label>
-                                <input type="number" name="exam_score" class="form-control">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
                                 <label>Attendance</label>
                                 <input type="number" name="attendance" class="form-control">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label>Previous Score</label>
-                                <input type="number" name="previous_scores" class="form-control">
                             </div>
 
                             <div class="col-md-4 mb-3">
@@ -74,43 +64,8 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
-                                <label>Tutoring Sessions</label>
-                                <input type="number" name="tutoring_sessions" class="form-control">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label>Physical Activity</label>
-                                <input type="number" name="physical_activity" class="form-control">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label>Sleep Hours</label>
-                                <input type="number" name="sleep_hours" class="form-control">
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label>Access To Resources</label>
-
-                                <select name="access_to_resources" class="form-select" required>
-
-                                    <option value="">
-                                        -- Pilih Akses Resource --
-                                    </option>
-
-                                    <option value="High">
-                                        High
-                                    </option>
-
-                                    <option value="Medium">
-                                        Medium
-                                    </option>
-
-                                    <option value="Low">
-                                        Low
-                                    </option>
-
-                                </select>
-
+                                <label>Previous Score</label>
+                                <input type="number" name="previous_scores" class="form-control">
                             </div>
 
                         </div>
