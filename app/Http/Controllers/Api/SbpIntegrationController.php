@@ -31,16 +31,9 @@ class SbpIntegrationController extends Controller
                 'nama' => $siswa->name ?? '-',
 
                 // Variabel dari data akademik (SIAKAD / Guru)
-                'kehadiran'        => $siswa->Attendance ?? 0,
-                'nilai_ujian'      => $siswa->Exam_Score ?? 0,
-                'nilai_sebelumnya' => $siswa->Previous_Scores ?? 0,
-
-                // Variabel dari data kebiasaan (Kuesioner Siswa)
-                'jam_belajar'         => $siswa->Hours_Studied ?? 0,
-                'sesi_bimbel'         => $siswa->Tutoring_Sessions ?? 0,
-                'aktivitas_fisik'     => $siswa->Physical_Activity ?? 0,
-                'jam_tidur'           => $siswa->Sleep_Hours ?? 0,
-                'akses_sumber_daya'   => $siswa->Access_to_Resources ?? 'Medium'
+                'attendance'        => $siswa->Attendance ?? 0,
+                'previous_scores'   => $siswa->Previous_Scores ?? 0,
+                'hours_studied'     => $siswa->Hours_Studied ?? 0,
             ]
         ], 200);
     }

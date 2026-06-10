@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class InputDataController extends Controller
 {
-    // Fungsi untuk membuat NISN acak 8 digit otomatis
+    // Fungsi untuk membuat NISN acak 10 digit otomatis
     private function generateNisn()
     {
         do {
-            $nisn = str_pad(rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
+            $nisn = '0' . str_pad((string) random_int (0, 99999999), 9, '0', STR_PAD_LEFT);
         } while (Student::where('NISN', $nisn)->exists()); // Pastikan tidak ada yang kembar
 
         return $nisn;
@@ -85,14 +85,9 @@ class InputDataController extends Controller
                         'name'                => null,
 
                         // Membaca urutan index array berdasarkan kolom CSV ASLI Anda
-                        'Attendance'          => $row[1] ?? 0,
-                        'Hours_Studied'       => $row[2] ?? 0,
-                        'Previous_Scores'     => $row[3] ?? 0,
-                        'Tutoring_Sessions'   => $row[4] ?? 0,
-                        'Sleep_Hours'         => $row[5] ?? 0,
-                        'Access_to_Resources' => $row[6] ?? 'Medium',
-                        'Motivation_Level'    => $row[7] ?? 0,
-                        'Kesulitan_Belajar'   => $row[8] ?? 0,
+                        'Attendance'          => $row[0] ?? 0,
+                        'Hours_Studied'       => $row[1] ?? 0,
+                        'Previous_Scores'     => $row[2] ?? 0,
                     ]);
                     $berhasil++;
                 }
@@ -120,14 +115,10 @@ class InputDataController extends Controller
             // Header CSV disesuaikan dengan urutan kolom Import CSV di atas
             fputcsv($file, [
                 'NISN',
+                'Nama',
                 'Attendance',
                 'Hours_Studied',
                 'Previous_Scores',
-                'Tutoring_Sessions',
-                'Motivation_Level',
-                'Sleep_Hours',
-                'Access_to_Resources',
-                'Kesulitan_Belajar',
             ]);
             fclose($file);
         };

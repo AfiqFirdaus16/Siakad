@@ -15,9 +15,7 @@ class DashboardController extends Controller
 
         // Rata-rata numerik
         $avgAttendance = Student::avg('Attendance');
-        $avgSleep = Student::avg('Sleep_Hours');
         $avgStudy = Student::avg('Hours_Studied');
-        $avgTutor = Student::avg('Tutoring_Sessions');
         $avgPreviousScore = Student::avg('Previous_Scores');
 
         // Distribusi Attendance
@@ -47,37 +45,16 @@ class DashboardController extends Controller
             Student::where('Hours_Studied', '>', 20)->count(),
         ];
 
-        // Distribusi Sleep Hours
-        $sleepDistribution = [
-            Student::whereBetween('Sleep_Hours', [0, 4])->count(),
-            Student::whereBetween('Sleep_Hours', [5, 6])->count(),
-            Student::whereBetween('Sleep_Hours', [7, 8])->count(),
-            Student::whereBetween('Sleep_Hours', [9, 10])->count(),
-            Student::where('Sleep_Hours', '>', 10)->count(),
-        ];
-
-        // Distribusi Access to Resources
-        $resourceDistribution = [
-            Student::where('Access_to_Resources', 'Low')->count(),
-            Student::where('Access_to_Resources', 'Medium')->count(),
-            Student::where('Access_to_Resources', 'High')->count(),
-        ];
-
         return view('admin.dashboard', compact(
             'totalSiswa',
 
             'avgAttendance',
-            'avgSleep',
             'avgStudy',
-            'avgTutor',
             'avgPreviousScore',
 
             'attendanceDistribution',
             'scoreDistribution',
             'studyDistribution',
-            'sleepDistribution',
-
-            'resourceDistribution',
         ));
     }
 }
