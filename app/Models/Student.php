@@ -11,5 +11,6 @@ class Student extends Model
 
     protected $guarded = [];
     protected $table = 'students';
-    public $timestamps = false;
+
+    // BARIS TIMESTAMPS FALSE SUDAH DIHAPUS AGAR SINKRON DENGAN MIGRATION
 }
